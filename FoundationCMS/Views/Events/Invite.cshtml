@@ -1,6 +1,134 @@
-﻿
+﻿@model Event
+    <div class="container">
+        <div class="alert alert-success fade show" role="alert">
+            <strong>Completed!</strong> You have successfully created the following event!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
 
-@foreach(var item in ViewBag.Donors)
-{
-    @item.FirstName
-}
+
+        <table class="table table-hover">
+            <tr>
+                <th>Event name</th>
+                <th>Creation date</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Location</th>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        <label>@ViewBag.EventInfo.EventName</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label>@ViewBag.EventInfo.CreationDate</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label>@ViewBag.EventInfo.EventDate.ToString("d")</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label>@ViewBag.EventInfo.StartAt.ToString("t") to @ViewBag.EventInfo.EndAt.ToString("t")</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label>@ViewBag.EventInfo.Location</label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
+
+
+
+
+
+
+        @if (ViewBag.InvitedDonor.Count == 0) //if zero invited, display nothing
+        {
+            <div class="alert alert-danger fade show" role="alert">
+                You have not invited any donors!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        else
+        {
+    <div class="alert alert-info fade show" role="alert">
+        @ViewBag.InvitedDonor.Count donor(s) have been invited to @ViewBag.EventInfo.EventName's event as listed below!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Operation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var invited in ViewBag.InvitedDonor)
+                    {
+                    <tr>
+                        <td>@invited.FirstName</td>
+                        <td>@invited.LastName</td>
+                        <td><button type="button"  onclick="location.href='/Events/Uninvite/@ViewBag.EventInfo.Id/@invited.Id'" class="btn btn-danger">Uninvite</button></td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+
+
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            To add donor(s) that is not listed below, <strong><a href="/Donors/Add">click here</a></strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="alert alert-primary fade show" role="alert">
+            Select the following donors and invite them to <strong>@ViewBag.EventInfo.EventName's</strong> fundraising!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form method="post">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Operation</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in ViewBag.Donors)
+                    {
+                        <tr>
+                            <td>@item.FirstName</td>
+                            <td>@item.LastName</td>
+                            <td><input type="checkbox" name="checkedIdList" value="@item.Id"></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <input type="hidden" value="@ViewBag.EventInfo.Id" name="eventId" />
+            <button type="submit" class="btn btn-primary">Invite</button>
+        </form>
+
+
+    </div>

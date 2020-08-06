@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoundationCMS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200731032002_InitialSchema1")]
-    partial class InitialSchema1
+    [Migration("20200804210107_InitialSchema")]
+    partial class InitialSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -156,6 +156,9 @@ namespace FoundationCMS.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsPresent")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("Selected")
                         .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");

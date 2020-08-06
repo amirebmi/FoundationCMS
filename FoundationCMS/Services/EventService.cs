@@ -9,17 +9,23 @@ namespace FoundationCMS.Services
 {
     public interface IEventService
     {
-        List<Event> GetEvents();
-        Event GetEvent(int id);
-        void AddEvent(Event e);
-        void InviteDonor(EventDonor ed);
-        void DeleteEvent(Event e);
-        void SaveChanges();
+        List<Event> GetEvents();    // Used to display list of events
+        Event GetEvent(int id);     // Used to get a specific event
+        void AddEvent(Event e);     // Used to add donor(s)
+        void InviteDonor(EventDonor ed);    // Used to invite donor into EventDonor
 
-        List<Donor> GetInvitedDonors(int id);
-        Donor GetInvitedDonor(int id);
+        void DeleteEvent(Event e);
+        void SaveChanges();     // Used to make a SaveChanges()
+
+        List<Donor> GetInvitedDonors(int eventId);
+        Donor GetInvitedDonor(int donorId, int eventId);
+
+        void Uninvite(int eventId, int donorId);
+        bool IsInvited(int donorId, int eventId);
         List<Donor> GetPresentDonors(int eventId);
         List<Donor> GetAbsentDonors(int eventId);
+
+        List<EventDonor> GetEventDonors();
 
     }
     public class EventService : IEventService
@@ -43,15 +49,9 @@ namespace FoundationCMS.Services
 
         public void AddEvent(Event e)
         {
-            var newEvent = new Event
-            {
-                EventName = e.EventName,
-                EndAt = e.EndAt,
-                StartAt = e.StartAt,
-                Location = e.Location
-            };
+            
 
-            _db.Events.Add(newEvent);
+            _db.Events.Add(e);
             _db.SaveChanges();
 
             
@@ -79,11 +79,38 @@ namespace FoundationCMS.Services
         public List<Donor> GetInvitedDonors(int eventId)
         {
             return _db.EventDonors.Where(e => e.EventId == eventId).Include(e => e.Donor).Select(e => e.Donor).ToList();
+            
         }
 
-        public Donor GetInvitedDonor(int donorId)
+        public Donor GetInvitedDonor(int donorId, int eventId)
         {
-            return _db.EventDonors.Where(e => e.DonorId == donorId).Select(e => e.Donor).SingleOrDefault();
+            return _db.EventDonors.Where(e => e.DonorId == donorId).Where(c => c.EventId == eventId).Select(e => e.Donor).SingleOrDefault(); 
+        }
+
+        public void Uninvite(int eventId, int donorId)
+        {
+
+            var x = _db.EventDonors.Where(e => (e.EventId == eventId))
+                                   .Where(d => (d.DonorId == donorId)).SingleOrDefault();
+
+            _db.EventDonors.Remove(x);
+
+            _db.SaveChanges();
+
+
+
+
+            //_db.EventDonors.Remove(eventDonor);
+            //_db.SaveChanges();
+        }
+
+        public bool IsInvited(int donorId, int eventId)
+        {
+            var result = _db.EventDonors.Where(e => e.DonorId == donorId && e.EventId == eventId).Select(e => e.Donor).SingleOrDefault();
+
+            if (result == null)
+                return false;
+            return true;
         }
 
         public List<Donor> GetPresentDonors(int eventId)
@@ -94,6 +121,11 @@ namespace FoundationCMS.Services
         public List<Donor> GetAbsentDonors(int eventId)
         {
             return _db.EventDonors.Where(e => e.EventId == eventId).Where(e => e.IsPresent == false).Include(e => e.Donor).Select(e => e.Donor).ToList();
+        }
+
+        public List<EventDonor> GetEventDonors()
+        {
+            return _db.EventDonors.ToList();
         }
     }
 }

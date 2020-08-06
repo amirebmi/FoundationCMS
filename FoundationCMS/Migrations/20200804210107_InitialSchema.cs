@@ -114,7 +114,8 @@ namespace FoundationCMS.Migrations
                     InvitationDate = table.Column<DateTime>(nullable: false),
                     IsPresent = table.Column<bool>(nullable: false),
                     EventId = table.Column<int>(nullable: false),
-                    DonorId = table.Column<int>(nullable: false)
+                    DonorId = table.Column<int>(nullable: false),
+                    Selected = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

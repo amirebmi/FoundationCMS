@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Castle.DynamicProxy.Generators;
 using FoundationCMS.Models;
 using FoundationCMS.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +27,16 @@ namespace FoundationCMS.Controllers
             return View();
         }
         
+        public IActionResult List()
+        {
+            return View(_eventService.GetEvents());
+        }
+
+
+
+
+
+
         [HttpGet]
         public IActionResult Add()
         {
@@ -53,27 +65,61 @@ namespace FoundationCMS.Controllers
         [HttpGet]
         public IActionResult Invite(int id)
         {
-            ViewBag.Donors = _donorService.GetDonors(); //Display list of donors for invitation
-            ViewBag.Id = id;
+            var x = (from d in _donorService.GetDonors()
+                              join e in _eventService.GetEventDonors() on d.Id equals e.DonorId
+                              where d.Id == e.DonorId && id == e.EventId
+                              select d).ToList();
+            ViewBag.Donors = _donorService.GetDonors().Except(x);
 
-            return View();
+            ViewBag.EventInfo = _eventService.GetEvent(id);     // Get the event information to be shown on invitation page
+
+
+            ViewBag.InvitedDonor = (from d in _donorService.GetDonors()
+                            join e in _eventService.GetEventDonors() on d.Id equals e.DonorId
+                            where d.Id == e.DonorId && id == e.EventId
+                            select d).ToList();
+
+
+
+
+
+
+            return View(_eventService.GetEvent(id));    // Return event to get the event information on the Invite page
         }
 
         [HttpPost]
-        public IActionResult Invite(int id, int[] selectedDonors)
+        public  IActionResult Invite(int eventId, List<int> checkedIdList)
         {
-            foreach(var item in selectedDonors)
+
+
+            foreach (var item in checkedIdList)
             {
-                var newObj = new EventDonor
+                var newGuest = new EventDonor
                 {
-                    EventId = id,
+                    EventId = eventId,
                     DonorId = item
                 };
-                _eventService.InviteDonor(newObj);
-                _eventService.SaveChanges();
-            }
 
-            return View();
+                    _eventService.InviteDonor(newGuest);
+                    _eventService.SaveChanges();
+                
+            }
+            return RedirectToAction("Invite", "Events", new { id = eventId });
+        }
+
+        [Route("Events/Uninvite/{eventId}/{donorId}")]
+        public IActionResult Uninvite(int eventId, int donorId)
+        {
+
+            _eventService.Uninvite(eventId, donorId);
+
+            //var invitedDonor = _eventService.GetInvitedDonor(donorId, eventId);
+            //EventDonor eventDonor = new EventDonor();
+            //eventDonor.Donor= invitedDonor; 
+            //_eventService.Uninvite(eventDonor);
+            return RedirectToAction("Invite", "Events", new { id = eventId });
+
+           // return $"DonorID: {donorId} and EventID: {eventId}";
         }
 
 

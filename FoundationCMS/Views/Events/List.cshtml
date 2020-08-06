@@ -1,5 +1,10 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model List<Event>
+
+    <ul>
+        @foreach (var item in Model)
+        {
+        <li>
+            <a href="Details/@item.Id">@item.EventName - @item.EventDate.ToString("d")</a>
+        </li>   
+        }
+    </ul>
