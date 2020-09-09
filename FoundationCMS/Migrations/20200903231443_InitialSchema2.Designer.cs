@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoundationCMS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200804210107_InitialSchema")]
-    partial class InitialSchema
+    [Migration("20200903231443_InitialSchema2")]
+    partial class InitialSchema2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,12 +34,22 @@ namespace FoundationCMS.Migrations
                     b.Property<int>("DonorId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("EventDonorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PaymentMethod")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DonorId");
+
+                    b.HasIndex("EventDonorId");
+
+                    b.HasIndex("EventId");
 
                     b.ToTable("Contributions");
                 });
@@ -263,6 +273,16 @@ namespace FoundationCMS.Migrations
                     b.HasOne("FoundationCMS.Models.Donor", "Donor")
                         .WithMany("Contributions")
                         .HasForeignKey("DonorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FoundationCMS.Models.EventDonor", null)
+                        .WithMany("Contributions")
+                        .HasForeignKey("EventDonorId");
+
+                    b.HasOne("FoundationCMS.Models.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

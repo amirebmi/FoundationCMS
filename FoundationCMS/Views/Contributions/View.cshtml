@@ -1,0 +1,228 @@
+﻿@model Event
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Event Information</h4>
+                    <hr />
+                    <p class="card-text"><strong>Name: </strong>@Model.EventName</p>
+                    <p class="card-text"><strong>Status: </strong>IN SESSION</p>
+                    <p class="card-text"><strong>Location: </strong>@Model.Location</p>
+                    <p class="card-text"><strong>Date/Time: </strong>@Model.EventDate.ToString("d") @Model.StartAt.ToString("t") to @Model.EndAt.ToString("t")</p>
+                    <a href="/Events/Details/@Model.Id" class="btn btn-primary">Event profile</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Contributions Calculator</h4>
+                    <hr />
+                    <p class="card-text"><strong>Goal: </strong>Unavailable</p>
+                    <p class="card-text"><strong>Contributed: </strong>Unavailable</p>
+                    <p class="card-text"><strong>Remaining: </strong>Unavailable</p>
+                    <a href="/Events/Details/@Model.Id" class="btn btn-primary">Donation details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Contributions Report</h4>
+                    <hr />
+                    <p class="card-text">
+                        <strong>
+                            Present donors:
+                            <i data-toggle="tooltip" data-placement="bottom" title="Number of present donors at this event." class="fa fa-question-circle"></i>
+                        </strong> @ViewBag.PresentDonors.Count
+                    </p>
+                    <p class="card-text">
+                        <strong>
+                            Count donations:
+                            <i data-toggle="tooltip" data-placement="bottom" title="Number of donations at this event." class="fa fa-question-circle"></i>
+                        </strong> <label id="numberofdon"></label>
+                    </p>
+                    <p class="card-text">
+                        <strong>
+                            Donations count:
+                            <i data-toggle="tooltip" data-placement="bottom" title="Number of donors who haven't donated at this event." class="fa fa-question-circle"></i>
+                        </strong> <label id="numberofnotdonated"></label>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<table id="dt-vertical-scroll" class="table" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="th-sm">Name</th>
+            <th class="th-sm">Status</th>
+            <th class="th-sm">Operation</th>
+
+        </tr>
+    </thead>
+    @foreach (var item in ViewBag.PresentDonors)
+    {
+        <tr id="mytr" value="@item.Id">
+            <td>@item.LastName, @item.FirstName</td>
+            <td><span data-id="@item.Id" class="badge badge-light">Present</span></td>
+            <td>
+                <button type="submit" id="btn" value="@item.Id" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal-@item.Id">Donate Now</button>
+                <!-- Modal -->
+                <div id="myModal-@item.Id" class="modal fade" role="dialog">
+
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5>@item.FirstName @item.LastName donates at @Model.EventName</h5>
+
+                            </div>
+
+                            <div class="modal-body">
+                                <form action="/Contributions/Add" method="post" class="form1">
+
+                                    <input type="hidden" value="@Model.Id" name="eventId" />
+                                    <input data-id="@item.Id" type="hidden" value="@item.Id" name="donorId" />
+
+                                    <div style="display:none" id="msg-@item.Id" class="alert alert-warning alert-dismissible fade show" role="alert">
+                                        <strong>STATUS TEST</strong>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+
+                                    <label class="form-check-label">Amount</label>
+                                    <input type="text" id="amount" name="amount" class="form-control" /><br />
+
+                                    <label class="form-check-label">Payment method</label>
+                                    <input type="text" id="pmethod" name="PaymentMethod" class="form-control" />
+                                    <br />
+
+                                    <button id="btn2" class="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+    }
+
+</table>
+
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+            $('#dt-vertical-scroll').dataTable({
+                "paging": false,
+                "fnInitComplete": function () {
+                    var myCustomScrollbar = document.querySelector('#dt-vertical-scroll_wrapper .dataTables_scrollBody');
+                    var ps = new PerfectScrollbar(myCustomScrollbar);
+                },
+                "scrollY": 450,
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $(".form1").submit(function (event) {
+                event.preventDefault();
+                var post_url = $(this).attr("action");
+                var request_method = $(this).attr("method");
+                var form_data = $(this).serialize();
+                var id = $(this).children("input[name='donorId']").val();
+                
+
+                $.ajax({
+                    url: post_url,
+                    type: request_method,
+                    data: form_data,
+                    success: function (event) {
+
+                        $('div').modal('hide');
+                        $('.form1').trigger("reset");
+                        $(`span[data-id = '${id}'`).text("Donated");
+
+
+                    }
+                });
+            });
+
+        });
+    </script>
+
+    <script>
+        // Donate Now button click handler
+        $(document).ready(function () {
+            $('#dt-vertical-scroll #btn').on('click', function () {
+
+                var eventid = @Model.Id;
+                var donorid = $(this).val();
+                
+
+                var url = '/api/contributions/isdonated/' + eventid + '/' + donorid;
+
+                $.get(url, function (data, textStatus, jqXHR) {
+
+                    if (data > 0) {
+                        alert('Attention: This donor already donated at this event. You can enter additional contributions for the same donor.');
+                        
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        // This script used for ? (information img tag) in card
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+
+    <script>
+    // Load number of donations
+    $(document).ready(function () {
+
+        var url = '/api/contributions/numberofdonation/'.concat(@Model.Id);
+
+        setInterval(function () {
+            $('#numberofdon').load(url);
+        }, 200);
+
+    });
+
+    // Load number of donors who aren't donated
+    $(document).ready(function () {
+
+        var url = '/api/contributions/numberofnotdonated/'.concat(@Model.Id);
+
+        setInterval(function () {
+            $('#numberofnotdonated').load(url);
+        }, 200);
+
+    });
+
+
+    </script>
+
+
+
+}

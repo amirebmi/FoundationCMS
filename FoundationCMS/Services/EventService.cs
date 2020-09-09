@@ -1,8 +1,10 @@
 ﻿using FoundationCMS.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace FoundationCMS.Services
@@ -26,6 +28,10 @@ namespace FoundationCMS.Services
         List<Donor> GetAbsentDonors(int eventId);
 
         List<EventDonor> GetEventDonors();
+
+        void Present(int eventId, int donorId);
+
+        void Absent(int eventId, int donorId);
 
     }
     public class EventService : IEventService
@@ -78,8 +84,9 @@ namespace FoundationCMS.Services
 
         public List<Donor> GetInvitedDonors(int eventId)
         {
-            return _db.EventDonors.Where(e => e.EventId == eventId).Include(e => e.Donor).Select(e => e.Donor).ToList();
-            
+            var invitedDonors = _db.EventDonors.Where(e => e.EventId == eventId).Include(e => e.Donor).Select(e => e.Donor).ToList();
+
+            return invitedDonors;
         }
 
         public Donor GetInvitedDonor(int donorId, int eventId)
@@ -89,19 +96,12 @@ namespace FoundationCMS.Services
 
         public void Uninvite(int eventId, int donorId)
         {
-
             var x = _db.EventDonors.Where(e => (e.EventId == eventId))
                                    .Where(d => (d.DonorId == donorId)).SingleOrDefault();
 
             _db.EventDonors.Remove(x);
 
             _db.SaveChanges();
-
-
-
-
-            //_db.EventDonors.Remove(eventDonor);
-            //_db.SaveChanges();
         }
 
         public bool IsInvited(int donorId, int eventId)
@@ -126,6 +126,28 @@ namespace FoundationCMS.Services
         public List<EventDonor> GetEventDonors()
         {
             return _db.EventDonors.ToList();
+        }
+
+        public void Present(int eventId, int donorId)
+        {
+            //var donor = _db.EventDonors.Where(e => (e.EventId == eventId))
+            //                           .Where(e => (e.DonorId == donorId)).SingleOrDefault();
+
+            var donor = _db.EventDonors.Where(e => e.EventId == eventId && e.DonorId == donorId).SingleOrDefault();
+            donor.IsPresent = true;
+
+            _db.EventDonors.Update(donor);
+            _db.SaveChanges(); 
+        }
+
+        public void Absent(int eventId, int donorId)
+        {
+            var donor = _db.EventDonors.Where(e => (e.EventId == eventId))
+                                       .Where(e => (e.DonorId == donorId)).SingleOrDefault();
+            donor.IsPresent = false;
+
+            _db.EventDonors.Update(donor);
+            _db.SaveChanges();
         }
     }
 }

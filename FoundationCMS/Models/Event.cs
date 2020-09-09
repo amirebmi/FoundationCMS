@@ -21,6 +21,8 @@ namespace FoundationCMS.Models
 
 
         public List<EventManager> EventManagers { get; set; }
-        public List<EventDonor> Donors { get; set; }    
+        //public List<EventDonor> Donors { get; set; }     // TEMPORARILY COMMENTED OUT 9/3/2020
+
+        public List<Donor> Donors { get; set; }
     }
 }

@@ -92,7 +92,8 @@ namespace FoundationCMS.Migrations
                     ContributionDate = table.Column<DateTime>(nullable: false),
                     Amount = table.Column<decimal>(nullable: false),
                     PaymentMethod = table.Column<string>(nullable: true),
-                    DonorId = table.Column<int>(nullable: false)
+                    DonorId = table.Column<int>(nullable: false),
+                    EventId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,6 +102,12 @@ namespace FoundationCMS.Migrations
                         name: "FK_Contributions_Donors_DonorId",
                         column: x => x.DonorId,
                         principalTable: "Donors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Contributions_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -164,6 +171,11 @@ namespace FoundationCMS.Migrations
                 name: "IX_Contributions_DonorId",
                 table: "Contributions",
                 column: "DonorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contributions_EventId",
+                table: "Contributions",
+                column: "EventId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventDonors_DonorId",

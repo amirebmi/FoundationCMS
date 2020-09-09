@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FoundationCMS.Models
 {
@@ -15,5 +17,16 @@ namespace FoundationCMS.Models
 
         public int DonorId { get; set; }
         public Donor Donor { get; set; }
+
+
+        public int EventId { get; set; }
+        public Event Event { get; set; }
+
+
+        
+        //public Contribution(decimal amount)
+        //{
+        //    Amount = amount;
+        //}
     }
 }

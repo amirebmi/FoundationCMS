@@ -1,0 +1,80 @@
+﻿@model Event
+
+@{
+    ViewData["Title"] = Model.EventName + "'s Profile";
+}
+
+<div class="alert alert-success">
+    <strong>@Model.EventName</strong>'s event information.
+</div>
+
+<div class="container">
+    <div class="row justify-content-between">
+        <div class="col-4">
+            Manager(s): <strong class="text-primary">Unavailable</strong><br />
+            Created by: <strong class="text-primary">Unavailable</strong><br />
+            Created on: <strong class="text-primary">@Model.CreationDate.Date</strong><br />
+        </div>
+        <div class="col-4">
+            Event name: <strong>@Model.EventName</strong><br />
+            Date/Time: <strong>@Model.EventDate.ToString("d") (@Model.StartAt.ToString("t") to @Model.EndAt.ToString("t"))</strong><br />
+            Location: <strong>@Model.Location</strong><br />
+            Status: <strong class="text-success">Upcoming</strong>
+        </div>
+    </div>
+    <br />
+    <div class="alert alert-info">
+        Donors information! (Click on numbers will display the list)
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>No. Invited donors</th>
+                        <th>No. Present donors</th>
+                        <th>No. Absent donors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@ViewBag.InvitedNumber</td>
+                        <td>@ViewBag.PresentNumber</td>
+                        <td>@ViewBag.AbsentNumber</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="alert alert-primary" role="alert">
+        Management and Settings
+    </div>
+
+
+    <div class="row">
+        <div class="col-4">
+            <ul>
+                <li><a href="/Events/Manage/Invite/@Model.Id">Invitation and Guests Management</a></li>
+                <li><a href="/Events/Manage/RollCall/@Model.Id">Roll Call Attendance</a></li>
+                <li><a href="/Contributions/View/@Model.Id">Submit Donation(s)</a></li>
+            </ul>
+        </div>
+        <div class="col-4">
+            <ul>
+                <li><a href="#">Mofidy Event</a></li>
+                <li><a href="#">Remove Event</a></li>
+            </ul>
+        </div>
+        <div class="col-4">
+            <ul>
+                <li><a href="#">Get Event Report</a></li>
+                <li><a href="#">Get Donations Report</a></li>
+                <li><a href="#">Report an Issue</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+
+</div>

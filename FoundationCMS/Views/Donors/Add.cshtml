@@ -1,4 +1,4 @@
-﻿
+﻿@model Donor
 
 <div class="container">
     <div class="row">
@@ -385,7 +385,8 @@
 
                             <div class="form-group">
                                 <label>Email 1</label>
-                                <input class="form-control" type="email" name="email1" placeholder="John@example.com">
+                                <input class="form-control" asp-for="Email1" placeholder="John@example.com">
+                                <span asp-validation-for="Email1"></span>
                             </div>
 
                             <div class="form-group">

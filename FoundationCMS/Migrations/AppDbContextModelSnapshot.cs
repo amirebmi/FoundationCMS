@@ -32,12 +32,17 @@ namespace FoundationCMS.Migrations
                     b.Property<int>("DonorId")
                         .HasColumnType("int");
 
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PaymentMethod")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DonorId");
+
+                    b.HasIndex("EventId");
 
                     b.ToTable("Contributions");
                 });
@@ -65,6 +70,12 @@ namespace FoundationCMS.Migrations
 
                     b.Property<string>("Email2")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int?>("EventDonorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -103,6 +114,10 @@ namespace FoundationCMS.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EventDonorId");
+
+                    b.HasIndex("EventId");
 
                     b.ToTable("Donors");
                 });
@@ -263,6 +278,23 @@ namespace FoundationCMS.Migrations
                         .HasForeignKey("DonorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("FoundationCMS.Models.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FoundationCMS.Models.Donor", b =>
+                {
+                    b.HasOne("FoundationCMS.Models.EventDonor", null)
+                        .WithMany("Donors")
+                        .HasForeignKey("EventDonorId");
+
+                    b.HasOne("FoundationCMS.Models.Event", null)
+                        .WithMany("Donors")
+                        .HasForeignKey("EventId");
                 });
 
             modelBuilder.Entity("FoundationCMS.Models.EventDonor", b =>
@@ -274,7 +306,7 @@ namespace FoundationCMS.Migrations
                         .IsRequired();
 
                     b.HasOne("FoundationCMS.Models.Event", "Event")
-                        .WithMany("Donors")
+                        .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -21,11 +21,7 @@ namespace FoundationCMS.Models
         public int DonorId { get; set; }
         public Donor Donor { get; set; }
 
-        public bool Selected { get; set; }
-
-
-        [NotMapped] // Recently added 08/04/2020
-        public List<EventDonor> CheckBoxItems { get; set; }
-
+        //Recently added 9/4/2020 - Might not work
+        public List<Donor> Donors { get; set; }
     }
 }

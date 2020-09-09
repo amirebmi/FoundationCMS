@@ -33,6 +33,12 @@ namespace FoundationCMS.Controllers
         [HttpPost]
         public IActionResult Add(Donor d)
         {
+            if (!ModelState.IsValid)    // If there were validation errors, IsValid will be false.
+            {
+                return View(d);
+            }
+
+
             _donorService.AddDonor(d);
             _donorService.SaveChanges();
             return RedirectToAction("Index", "Home");

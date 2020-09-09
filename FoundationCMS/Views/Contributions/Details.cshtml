@@ -1,0 +1,19 @@
+﻿@model Contribution
+
+
+
+<h1>Details for Contributions</h1>
+
+
+@foreach (Donor item in ViewBag.Dict.Keys)
+{
+    <ul>
+        <li>@item.FirstName @item.LastName</li>
+    </ul>
+    @foreach (var item2 in ViewBag.Dict[item])
+    {
+        <ul>
+            <li>@item2.Amount</li>
+        </ul>
+    }
+}

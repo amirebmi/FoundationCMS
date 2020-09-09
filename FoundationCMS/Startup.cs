@@ -39,6 +39,7 @@ namespace FoundationCMS
             // Register all services
             services.AddScoped<IDonorService, DonorService>();
             services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IContributionService, ContributionService>();
             services.AddScoped<IUserService, UserService>();
         }
 

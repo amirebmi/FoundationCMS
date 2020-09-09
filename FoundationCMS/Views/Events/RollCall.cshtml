@@ -1,0 +1,99 @@
+﻿@model Event
+
+@{
+    ViewData["Title"] = Model.EventName + " - Roll Call Attendance";
+}
+
+@if (@ViewBag.StartRoll == true)
+{
+    @if (ViewBag.PresentDonors.Count == 0)
+    {
+        <div class="alert alert-danger fade show" role="alert">
+            All donors are currently absent!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info fade show" role="alert">
+            @ViewBag.PresentDonors.Count donor(s) are currently present at this event!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.PresentDonors)
+                {
+                    <tr>
+                        <td>@item.LastName, @item.FirstName</td>
+                        <td><span class="badge badge-success">Present</span></td>
+                        <td><button type="button" onclick="location.href='/Events/Manage/RollCall/Absent/@Model.Id/@item.Id'" class="btn btn-secondary">Absent</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+
+    @if (ViewBag.InvitedDonors.Count == 0) //if zero invited, display nothing
+    {
+        <div class="alert alert-danger fade show" role="alert">
+            There's no donor for roll call attendance. To invite more donors to this event, please <a href="/Events/Manage/Invite/@Model.Id">click here!</a>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info fade show" role="alert">
+            @ViewBag.InvitedDonors.Count donor(s) are not currently present at @Model.EventName's event!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.InvitedDonors)
+                {
+                    <tr>
+                        <td>@item.FirstName</td>
+                        <td>@item.LastName</td>
+                        <td><span class="badge badge-secondary">Absent</span></td>
+                        <td><button type="button" onclick="location.href='/Events/Manage/RollCall/Present/@Model.Id/@item.Id'" class="btn btn-success">Present</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <div class="alert alert-danger fade show" role="alert">
+        It's early to start attendace. @Model.EventName starts at @Model.StartAt.ToString("t")
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+

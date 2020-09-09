@@ -1,0 +1,2 @@
+You added:  bootstrap.min & mdb.min & style
+addons/datatables.min

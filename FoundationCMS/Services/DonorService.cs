@@ -1,4 +1,5 @@
 ﻿using FoundationCMS.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,11 @@ namespace FoundationCMS.Services
         public Donor GetDonor(int donorId)
         {
             return _db.Donors.Find(donorId);
+        }
+
+        public Donor GetDonorContr(int id)
+        {
+            return _db.Donors.Where(e => e.Id == id).Include(d => d.Contributions).ThenInclude(c => c.Event).SingleOrDefault();
         }
 
         public List<Donor> GetDonors()

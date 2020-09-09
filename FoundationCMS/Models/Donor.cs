@@ -25,10 +25,15 @@ namespace FoundationCMS.Models
         public string City { get; set; }
         public string Zip { get; set; }
         
+        [Phone]
         public string CellPhone { get; set; }
+        [Phone]
         public string HomePhone { get; set; }
-        
+
+        [EmailAddress]
         public string Email1 { get; set; }
+
+        [EmailAddress]
         public string Email2 { get; set; }
 
         public string DonorNotes { get; set; }
