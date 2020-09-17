@@ -23,10 +23,6 @@ namespace FoundationCMS.Models
         public Event Event { get; set; }
 
 
-        
-        //public Contribution(decimal amount)
-        //{
-        //    Amount = amount;
-        //}
+
     }
 }

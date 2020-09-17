@@ -22,7 +22,7 @@
                     <p class="card-text"><strong>Goal: </strong>Unavailable</p>
                     <p class="card-text"><strong>Contributed: </strong>Unavailable</p>
                     <p class="card-text"><strong>Remaining: </strong>Unavailable</p>
-                    <a href="/Events/Details/@Model.Id" class="btn btn-primary">Donation details</a>
+                    <a href="/Contributions/Details/@Model.Id" class="btn btn-primary">Donation details</a>
                 </div>
             </div>
         </div>
@@ -82,7 +82,6 @@
 
                             <div class="modal-header">
                                 <h5>@item.FirstName @item.LastName donates at @Model.EventName</h5>
-
                             </div>
 
                             <div class="modal-body">
@@ -92,7 +91,7 @@
                                     <input data-id="@item.Id" type="hidden" value="@item.Id" name="donorId" />
 
                                     <div style="display:none" id="msg-@item.Id" class="alert alert-warning alert-dismissible fade show" role="alert">
-                                        <strong>STATUS TEST</strong>
+                                        
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>

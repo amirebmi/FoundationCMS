@@ -51,9 +51,11 @@ namespace FoundationCMS.Controllers
                 {
                     var newContribution = new Contribution
                     {
+                        Id = item.Id,
                         Amount = item.Amount,
                         ContributionDate = item.ContributionDate,
-                        PaymentMethod = item.PaymentMethod
+                        PaymentMethod = item.PaymentMethod,
+                        EventId = item.EventId
                     };
                     contributions.Add(newContribution);
                 }
@@ -62,9 +64,11 @@ namespace FoundationCMS.Controllers
                     contributions = new List<Contribution>();
                     var newContribution = new Contribution
                     {
+                        Id = item.Id,
                         Amount = item.Amount,
                         ContributionDate = item.ContributionDate,
-                        PaymentMethod = item.PaymentMethod
+                        PaymentMethod = item.PaymentMethod,
+                        EventId = item.EventId
                     };
 
                     contributions.Add(newContribution);
@@ -73,16 +77,48 @@ namespace FoundationCMS.Controllers
                     dict.Add(item.Donor, contributions);
                 }
             }
-
-
-
             ViewBag.Dict = dict;
-            
+            return View();
+        }
 
+        [Route("Contributions/Remove/{eventId}/{contributionId}")]
+        public IActionResult Remove(int eventId, int contributionId)
+        {
+
+            _contributionService.RemoveContribution(contributionId);
+            return RedirectToAction("Details", "Contributions", new { id = eventId });
+        }
+
+
+        [HttpGet]
+        [Route("Contributions/Edit/{eventId}/{contributionId}/{donorId}")]
+        public IActionResult Edit(int eventId, int contributionId, int donorId)
+        {
+            ViewBag.Donor = _donorService.GetDonor(donorId);
+
+            ViewBag.Event = _eventService.GetEvent(eventId);
+
+            ViewBag.Contribution = _contributionService.GetContribution(contributionId);
 
             return View();
         }
 
+        [Route("Contributions/Edit")]
+        [HttpPost]
+        public IActionResult Edit(Contribution c)
+        {
+
+            var contribution = _contributionService.GetContribution(c.Id);
+
+            contribution.Amount = c.Amount;
+            contribution.ContributionDate = DateTime.Now;
+            contribution.PaymentMethod = c.PaymentMethod;
+
+            _contributionService.SaveChanges();
+
+
+            return RedirectToAction("Details", "Contributions", new { id = contribution.EventId });
+        }
 
 
         // Use it for html to pdf convertion

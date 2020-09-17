@@ -171,9 +171,6 @@ namespace FoundationCMS.Migrations
                     b.Property<bool>("IsPresent")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("Selected")
-                        .HasColumnType("tinyint(1)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DonorId");

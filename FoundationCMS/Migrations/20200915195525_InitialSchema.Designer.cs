@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoundationCMS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200903231443_InitialSchema2")]
-    partial class InitialSchema2
+    [Migration("20200915195525_InitialSchema")]
+    partial class InitialSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,9 +34,6 @@ namespace FoundationCMS.Migrations
                     b.Property<int>("DonorId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EventDonorId")
-                        .HasColumnType("int");
-
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
@@ -46,8 +43,6 @@ namespace FoundationCMS.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DonorId");
-
-                    b.HasIndex("EventDonorId");
 
                     b.HasIndex("EventId");
 
@@ -77,6 +72,12 @@ namespace FoundationCMS.Migrations
 
                     b.Property<string>("Email2")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int?>("EventDonorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -115,6 +116,10 @@ namespace FoundationCMS.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EventDonorId");
+
+                    b.HasIndex("EventId");
 
                     b.ToTable("Donors");
                 });
@@ -166,9 +171,6 @@ namespace FoundationCMS.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsPresent")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Selected")
                         .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
@@ -276,15 +278,22 @@ namespace FoundationCMS.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FoundationCMS.Models.EventDonor", null)
-                        .WithMany("Contributions")
-                        .HasForeignKey("EventDonorId");
-
                     b.HasOne("FoundationCMS.Models.Event", "Event")
                         .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FoundationCMS.Models.Donor", b =>
+                {
+                    b.HasOne("FoundationCMS.Models.EventDonor", null)
+                        .WithMany("Donors")
+                        .HasForeignKey("EventDonorId");
+
+                    b.HasOne("FoundationCMS.Models.Event", null)
+                        .WithMany("Donors")
+                        .HasForeignKey("EventId");
                 });
 
             modelBuilder.Entity("FoundationCMS.Models.EventDonor", b =>
@@ -296,7 +305,7 @@ namespace FoundationCMS.Migrations
                         .IsRequired();
 
                     b.HasOne("FoundationCMS.Models.Event", "Event")
-                        .WithMany("Donors")
+                        .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

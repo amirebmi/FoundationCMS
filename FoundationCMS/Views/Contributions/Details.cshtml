@@ -5,15 +5,121 @@
 <h1>Details for Contributions</h1>
 
 
-@foreach (Donor item in ViewBag.Dict.Keys)
-{
-    <ul>
-        <li>@item.FirstName @item.LastName</li>
-    </ul>
-    @foreach (var item2 in ViewBag.Dict[item])
-    {
-        <ul>
-            <li>@item2.Amount</li>
-        </ul>
-    }
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Contribution(s)</th>
+            <th>Payment Type</th>
+            <th>Time</th>
+            <th>Operations</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Donor item in ViewBag.Dict.Keys)
+        {
+        <tr>
+            <td>
+                @item.LastName, @item.FirstName
+            </td>
+
+
+            <td>
+                @{
+                    decimal total = 0;
+                }
+
+                @foreach (var item2 in ViewBag.Dict[item])
+                {
+                <p>
+                    $@Math.Round(item2.Amount, 2)
+
+                </p>
+
+                    total += Math.Round(item2.Amount, 2);
+
+
+                    @if (ViewBag.Dict[item].IndexOf(item2) != ViewBag.Dict[item].Count - 1)
+                    {
+                        <hr />
+                    }
+                }
+            </td>
+
+            <td>
+                @foreach (var item2 in ViewBag.Dict[item])
+                {
+                    <p>@item2.PaymentMethod</p>
+                    @if (ViewBag.Dict[item].IndexOf(item2) != ViewBag.Dict[item].Count - 1)
+                    {
+                        <hr />
+                    }
+                }
+            </td>
+
+            <td>
+                @foreach (var item2 in ViewBag.Dict[item])
+                {
+                    <p>@item2.ContributionDate.ToString("t")</p>
+                    @if (ViewBag.Dict[item].IndexOf(item2) != ViewBag.Dict[item].Count - 1)
+                    {
+                        <hr />
+                    }
+                }
+            </td>
+
+
+            <td>
+                @foreach (var item2 in ViewBag.Dict[item])
+                {
+                    <p>
+                        <a id="edt" href="/Contributions/Edit/@item2.EventId/@item2.Id/@item.Id">Edit</a> |
+                        <a href="/Contributions/Remove/@item2.EventId/@item2.Id">Remove</a>
+                    </p>
+                    @if (ViewBag.Dict[item].IndexOf(item2) != ViewBag.Dict[item].Count - 1)
+                    {
+                        <hr />
+                    }
+                }
+            </td>
+
+
+            <td>
+                $@Math.Round(@total, 2)
+            </td>
+
+
+
+
+
+        </tr>
+        }
+
+    </tbody>
+</table>
+
+
+@section Scripts{ 
+
+<script>
+    $(document).ready(function () {
+        
+        $('.edit').click(function (e) {
+            $('#nmr').hide();
+            var id = $(this).children("input[name='donorId']").val();
+            
+            
+
+
+            $(`span[data-id = '${id}'`).text('Changes');
+            //alert(id);
+        });
+    });
+
+</script>
+
+
+
+
 }
