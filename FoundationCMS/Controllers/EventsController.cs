@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 using Castle.DynamicProxy.Generators;
 using FoundationCMS.Models;
 using FoundationCMS.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language;
 
 namespace FoundationCMS.Controllers
 {
+
+    // Anyone tries to access this controller actions, MUST be authenticated (Login)
+    [Authorize]
     public class EventsController : Controller
     {
         private readonly IEventService _eventService;
@@ -117,18 +121,6 @@ namespace FoundationCMS.Controllers
         public IActionResult RollCall(int eventId)
         {
             var eventObject = _eventService.GetEvent(eventId);
-
-            //bool onTime;
-            //if ((DateTime.Now.ToString("d") == eventObject.EventDate.ToString("d")) &&
-            //    (DateTime.Now.Hour == eventObject.StartAt.Hour) &&
-            //    (DateTime.Now.Minute == eventObject.StartAt.Minute))
-            //{
-            //    onTime = true;
-            //}
-            //else
-            //{
-            //    onTime = false;
-            //}
 
             ViewBag.StartRoll = true;
 

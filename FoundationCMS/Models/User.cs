@@ -42,10 +42,5 @@ namespace FoundationCMS.Models
 
         [MaxLength(1000)]
         public string UserNotes { get; set; }
-
-
-
-
-        public List<EventManager> EventManagers { get; set; }
     }
 }

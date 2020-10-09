@@ -11,6 +11,8 @@ namespace FoundationCMS.Services
     {
         List<User> GetUsers();
 
+        User GetUser(string username);
+
         User GetUser(int id);
 
         void AddUser(User u);
@@ -34,6 +36,11 @@ namespace FoundationCMS.Services
         public List<User> GetUsers()
         {
             return _db.Users.ToList();
+        }
+
+        public User GetUser(string username)
+        {
+            return _db.Users.Where(u => u.UserName == username).FirstOrDefault();
         }
 
         public User GetUser(int id)

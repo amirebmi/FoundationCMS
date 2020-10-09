@@ -116,7 +116,6 @@ namespace FoundationCMS.Controllers
 
             _contributionService.SaveChanges();
 
-
             return RedirectToAction("Details", "Contributions", new { id = contribution.EventId });
         }
 

@@ -18,11 +18,7 @@ namespace FoundationCMS.Models
         [Required]
         public string Location { get; set; }
 
-
-
-        public List<EventManager> EventManagers { get; set; }
-        //public List<EventDonor> Donors { get; set; }     // TEMPORARILY COMMENTED OUT 9/3/2020
-
         public List<Donor> Donors { get; set; }
+
     }
 }
